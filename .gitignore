@@ -13,3 +13,5 @@ dist/
 # Archives / local files
 *.zip
 .DS_Store
+.vercel
+.env*

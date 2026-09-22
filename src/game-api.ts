@@ -120,6 +120,25 @@ export const gameApi = {
     return data ?? [];
   },
 
+  // Returns real category activity from the existing situations table.
+  // This uses existing community activity as the traffic signal; no new
+  // analytics table or invented metric is introduced.
+  async getCategoryTraffic(): Promise<Record<string, number>> {
+    const { data, error } = await supabase
+      .from('situations')
+      .select('tag');
+
+    if (error) throw error;
+
+    const counts: Record<string, number> = {};
+    for (const row of data ?? []) {
+      if (!row.tag) continue;
+      counts[row.tag] = (counts[row.tag] || 0) + 1;
+    }
+
+    return counts;
+  },
+
   async getSituations(currentUserId: string | null): Promise<Situation[]> {
     const { data, error } = await supabase
       .from('situations')
